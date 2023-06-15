@@ -1,5 +1,4 @@
 <script>
-	import  {value_model,switch_model} from "model.js"
 	let ip ="120.26.95.127"
 	export default {
 		onLaunch: function() {
@@ -37,17 +36,23 @@
 				password:"123456",
 				keepalive:60	
 			},
-			value_model:value_model,
-			switch_model:switch_model
+			connected:false,
+			connecting:false,
+			opt_influxdb:{
+				url:`http://${ip}:8086`,
+				org:"cgqgzs",
+				bucket:"aicao",
+				_measurement:"data",
+				_field:"value",
+				token:"ft0aJ0ZdfU89CDKnUVFRDWGraR1WQo6k2dBpQNF2It_0inwgZSi7-9gHTB9P7EAslcief9YQIpRqbaD38mCOdw=="
+			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	
-@import "@/uni_modules/uview-ui/index.scss";
-/*每个页面公共css */
-@import '@/uni_modules/uview-ui/theme.scss';
+
+@import url('./static/bootstrap-4.6.2-dist/css/bootstrap.css');
 
 /* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {

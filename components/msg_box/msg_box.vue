@@ -1,12 +1,12 @@
 <template>
 	<view class="content">
 		<view class="header" style="100%">
-			<button size="mini" @click="clear()">清空</button>
+			<button type="button" class="btn btn-warning btn-sm" @click="clear()">清空</button>
 			<text>连接状态：{{status}}</text>
 			<text>{{broker}}</text>
 		</view>
 		
-		<view class="msg_box">
+		<scroll-view scroll-y style="height: 500rpx;" class="msg_box">
 			<view v-for="item in msgs" class="msg_item">
 				<view class="topic">
 					{{item.topic}}
@@ -15,7 +15,7 @@
 					{{item.msg}}
 				</view>
 			</view>
-		</view>
+		</scroll-view>
 	</view>
 </template>
 

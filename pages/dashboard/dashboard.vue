@@ -1,131 +1,226 @@
-<!-- 控制面板 -->
 <template>
+	<!-- 控制面板 -->
 	<view class="content">
-		<view class="data_wrap">
-			<view v-for="(item,index) in globalData.value_model" :key="index" class="data_box">
-			<zai-lattice  class="data" shadow 
-		    progressColor='#ffffff' 
-		    :progressPercent='(item.value-item.min)*100/(item.max-item.min)'
-		    :title='item.name' 
-		    :num='item.value' 
-		    :unit='item.unit'
-			:type='item.type'
-			:src='item.path'
-			:size='30'
-			@click="sendCmd(item.id,'value',item.name)"
-			/>
-			</view>
-		</view>
-		<view class="switch_wrap">
-			<view class="switch_box" v-for="(item,index) in globalData.switch_model" :key="index">
-				<text class="label">{{item.name}}</text>
-				<switch :ref="item.id" class="switch" :checked="item.value===1" @change="switchChanged($event,item.id)"></switch>
-			</view>
-		</view>
+		<!-- 预设温度 -->
+		<infoCard>
+			<template #title>预设温度</template>
+			<template #content>
+				<view class="cardContent">
+					<view class="digitalNumber">
+						<span class="value">{{targetTemp.targetValue.toFixed(1)}}</span><span class="unit">{{targetTemp.unit}}</span>
+					</view>
+					<view class="btnDown">
+						<button @click="targetTemp.up()" type="button" class="btn btn-primary btn-sm">上升</button>
+						<button @click="targetTemp.down()" type="button" class="btn btn-primary btn-sm">下降</button>
+					</view>
+				</view>
+			</template>
+		</infoCard>
+		<!-- 当前温度 -->
+		<infoCard progress :data="recData.temperature">
+			<template #title>当前温度</template>
+			<template #content>
+				<view class="cardContent">
+					<view class="digitalNumber">
+						<span  class="value">{{recData.temperature.value.toFixed(1)}}</span><span  class="unit">{{recData.temperature.unit}}</span>
+					</view>
+				</view>
+			</template>
+		</infoCard>
+		<!-- 烟雾浓度 -->
+		<infoCard progress :data="recData.smoke" :bgcor="'bg-dark'">
+			<template #title>烟雾浓度</template>
+			<template #content>
+				<view class="cardContent">
+					<view class="digitalNumber">
+						<span class="value">{{recData.smoke.value.toFixed(1)}}</span><span class="unit">{{recData.smoke.unit}}</span>
+					</view>
+				</view>
+			</template>
+		</infoCard>
+		<!-- 点火状态 -->
+		<infoCard status :data="statusData.fire">
+			<template #title>点火状态</template>
+		</infoCard>
+		<!-- 排气扇状态 -->
+		<infoCard status :data="statusData.fan">
+			<template #title>排气扇状态</template>
+		</infoCard>
+		<infoCard class="advice">
+			<template #title>您的年龄</template>
+			<template #content>
+				<view class="cardContent">
+					<view class="digitalNumber">
+						<view class="">
+							<span class="value">{{age.value}}</span><span class="unit">{{age.unit}}</span>
+						</view>
+						<view class="">
+							<span class="badge badge-warning title">推荐的最适温度为<span class="value">{{getAdvice(age.value)}}</span><span class="unit">°C</span></span>
+						</view>
+					</view>
+					<view class="btnDown">
+						<button @click="age.up()" type="button" class="btn btn-primary btn-sm">上升</button>
+						<button @click="age.down()" type="button" class="btn btn-primary btn-sm">下降</button>
+						<button @click="targetTemp.targetValue=getAdvice(age.value)" type="button" class="btn btn-danger btn-sm">设置</button>
+					</view>
+				</view>
+			</template>
+		</infoCard>
 	</view>
 </template>
 
 <script>
-	import zaiLattice from "../../components/zai-lattice";
-	function toastSuccess(title){
-		uni.showToast({
-			title:title
-		})
-	}
-	function toastError(title){
-		uni.showToast({
-			title:title,
-			icon:"error"
-		})
+	var topic_pub='set/aicao'
+	var sendTag=true
+	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
+	function send(id,val,globalData){
+		if(!globalData.connected){
+			toastError("请先连接！")
+			return
+		}else{
+			globalData.client.publish(
+				topic_pub,
+				`{"id":"${id}","value":${val}}`,
+				(err)=>{
+					if(!err)toastSuccess("设置成功!")
+					else toastError("设置失败！"+err)
+				}
+			)
+		}
 	}
 	export default {
+		beforeMount() {
+			this.recData.temperature.set(45)
+			this.recData.smoke.set(40)
+			this.registerUpdateModel()
+		},
 		data() {
 			return {
-				globalData:getApp().globalData
+				globalData:getApp().globalData,
+				targetTemp:{
+					targetValue:45.0,
+					unit:"°C",
+					up(){this.targetValue+=0.4},
+					down(){this.targetValue-=0.4}
+				},
+				age:{
+					value:50,
+					unit:"岁",
+					up(){this.value+=1},
+					down(){this.value-=1}
+				},
+				recData:{
+					temperature:{
+						value:0,
+						unit:"°C",
+						min:36,
+						max:53,
+						percent:0,
+						set(value){
+							if(value>this.max)toastError("警告温度过高！")
+							this.value=value
+							this.percent=(value-this.min)/(this.max-this.min)*100<0?0:(value-this.min)/(this.max-this.min)*100
+							// console.log("percent"+this.percent)
+						}
+					},
+					smoke:{
+						value:0,
+						unit:"ppm",
+						min:0,
+						max:100,
+						percent:0,
+						set(value){
+							if(value>this.max)toastError("警告温度过高！")
+							this.value=value
+							this.percent=(value-this.min)/(this.max-this.min)*100
+						}
+					},
+				},
+				statusData:{
+					fire:{
+						value:0,
+						set(val){
+							
+						}
+					},
+					fan:{
+						value:0,
+						set(val){
+							
+						}
+					}
+				}
 			};
 		},
-		components:{
-			zaiLattice,
-		},
 		methods:{
-			sendCmd(id,type,value){
-				if(!this.globalData.client){
-					toastError("请先连接！")
-					return true
-				}
-				let errcallback=(err)=>{
-									if(err) uni.showToast({
-										icon:"error",
-										content:err
-									})
-									else
-										uni.showToast({
-											title:"操作成功！",
-											duration:500
-										})
-								}
-				if(type=='value'){
-					uni.showModal({
-						title:value,
-						editable:true,
-						placeholderText:"请输入值",
-						success: (e) => {
-							// console.log(e)
-							if(e.confirm){
-								getApp().globalData.client.publish('set',JSON.stringify({
-									id:id,
-									value:Number(e.content)
-								}),{},
-								errcallback)
-							}else{
-								uni.showToast({
-									title:"用户取消"
-								})
-							}
-						}
-					})
-				}else if( type=='switch'){
-					getApp().globalData.client.publish('set',JSON.stringify({
-						id:id,
-						value:value
-					}),{},
-					errcallback)
-				}
+			log(d){
+				if(typeof d == "object")
+					uni.$emit("log",JSON.stringify(d))
+				else
+					uni.$emit("log",d)
 			},
-			switchChanged(e,id){
-				this.sendCmd(id,"switch", e.detail.value?1:0)
+			registerUpdateModel(){
+				uni.$on("updateModel",(msgjson)=>{
+					this.log("updateModelEvent:"+JSON.stringify(msgjson))
+					sendTag=false
+					msgjson.value=Number(msgjson.value)
+					if(this.recData[msgjson.id])
+						this.recData[msgjson.id].set(msgjson.value)
+					if(this.statusData[msgjson.id]&&(msgjson.value===1||msgjson.value===0))
+						this.statusData[msgjson.id].set(msgjson.value)
+					this.log("updateModelEvent done!:"+JSON.stringify(msgjson))
+				})
+			},
+			getAdvice(age){
+				if(age<12) return 38.0
+				else if(age<16)return 40.0
+				else if(age<26)return 45.0
+				else if(age<30)return 48.0
+				else if(age<40)return 52.0
+				else if(age<45)return 48.0
+				else if(age<55)return 45.0
+				else return 44.8
+			}
+		},
+		watch:{
+			'targetTemp.targetValue':function(val,oldVal){
+				if(val>=this.recData.temperature.max){
+					toastError("警告温度过高！")
+					this.targetTemp.targetValue=this.recData.temperature.max
+					return
+				}else{
+					send("temperature",val,this.globalData)
+				}
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
+@font-face{font-family:electronicFont;src:url(../../static/font/DS-DIGII-3.ttf)}
 .content{
 	padding: 15rpx;
-	.data_wrap{
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		.data_box{
-			display: inline-block;
-			margin: 20rpx;
-			width: 300rpx;
-		}
-	}
-	.switch_wrap{
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content:start;
-		.switch_box{
-			.label{
-				margin: 5rpx;
-				font-size: 14rpx;
+	display: flex;
+	flex-wrap: wrap;
+	.cardContent{
+		.digitalNumber{
+			font-family: electronicFont;
+			.value{
+				font-size: 45px;
 			}
-			.switch{
+			.unit{
+				font-size: 20px;
+			}
+			span{
 				margin: 10rpx;
 			}
 		}
+		.btnDown{
+			button{
+				margin: 5rpx;
+			}
+		}
 	}
+	
 }
 </style>

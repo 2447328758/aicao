@@ -1,5 +1,5 @@
-<!-- 连接信息 -->
 <template>
+	<!-- 连接信息 -->
 	<view class="content">
 		<view class="up">
 			<view class="form">
@@ -15,9 +15,9 @@
 						<uv-input class="uvinput"  placeholder="请输入端口号" @change="onBrokerChanged()" v-model="globalData.port"></uv-input>
 					</label>
 				</view>
-				<button @click="connect()">连接</button>
-				<button @click="disconnect(globalData.client)">断开连接</button>
-				<button @click="test()">测试</button>
+				<button type="button" class="btn btn-primary btn-sm" @click="connect()">连接</button>
+				<button type="button" class="btn btn-primary btn-sm" @click="disconnect(globalData.client)">断开连接</button>
+				<button type="button" class="btn btn-primary btn-sm" @click="test()">测试</button>
 			</view>
 		</view>
 		<msg_box :status="status" :msgs="msgs" :broker="broker"></msg_box>
@@ -26,13 +26,19 @@
 </template>
 
 <script>
+	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
 	import mqtt from 'mqtt/dist/mqtt.js'
+	import dashboard from '../dashboard/dashboard.vue'
 	export default {
+		mounted() {
+			this.connect()
+		},
+		components:{
+			dashboard
+		},
 		data() {
 			return {
 				globalData:getApp().globalData,
-				connected:false,
-				connecting:false,
 				topic_sub:["post/aicao","post"],
 				msgs:[]
 			};
@@ -57,14 +63,14 @@
 				uni.showLoading({
 					mask:true
 				})
-				this.connecting=true
+				this.globalData.connecting=true
 				this.disconnect(this.globalData.client)
 				this.globalData.client = mqtt.connect(this.globalData.broker,this.globalData.options)
 				// this.log(this.globalData)
 				this.globalData.client.on("error",(err)=>{
 					uni.hideLoading()
-					this.connected=false
-					this.connecting=false
+					this.globalData.connected=false
+					this.globalData.connecting=false
 					uni.showToast({
 						title:"错误"+err,
 						icon:"error",
@@ -78,14 +84,14 @@
 							title:"连接成功！",
 							mask:true
 						})
-						this.connecting=false
-						this.connected=true
+						this.globalData.connecting=false
+						this.globalData.connected=true
 						
 						this.onConnected()
 					},
 					(err)=>{
 						uni.hideLoading()
-						this.connecting=false
+						this.globalData.connecting=false
 					})
 				this.globalData.client.on('message',
 					(topic, message) =>{
@@ -107,18 +113,12 @@
 				}
 			},
 			setModelValue(msgjson){
-				for(let i =0;i<getApp().globalData.value_model.length;i++){
-					if(getApp().globalData.value_model[i].id==msgjson.id){
-						getApp().globalData.value_model[i].value=msgjson.value
-					}
+				if(!msgjson)
+					return
+				else{
+					this.log("收到模型信息..."+JSON.stringify(msgjson))
+					uni.$emit("updateModel",msgjson)
 				}
-				
-				for(let i =0;i<getApp().globalData.switch_model.length;i++){
-					if(getApp().globalData.switch_model[i].id==msgjson.id){
-						getApp().globalData.switch_model[i].value=msgjson.value
-					}
-				}
-				
 			},
 			onConnected(){
 				this.topic_sub.forEach((value,index)=>{
@@ -126,30 +126,41 @@
 						title:"订阅成功！"
 					})})
 				})
+				this.globalData.client.on("close",()=>{
+					this.globalData.connected=false
+					toastSuccess("断开连接！")
+				})
 			},
 			disconnect(client){
 				uni.showLoading({
 					title:"断开连接中...",
 				})
-				if(this.connected&&client){
-					client.end(true,{},(err)=>{
-						if(!err){
-							uni.hideLoading()
-							uni.showToast({
-								title:"断开连接成功！"
-							})
-							this.globalData.connected=false
-						}else{
-							uni.hideLoading()
-							uni.showToast({
-								title:"断开失败！",
-								icon:'error'
-							})
-						}
-					})
+				
+				
+				if(this.globalData.connected&&client){
+					// #ifndef APP-PLUS
+					client.end(true,(err)=>{
+							if(!err){
+								uni.hideLoading()
+								toastSuccess("断开连接成功")
+								this.globalData.connected=false
+							}else{
+								uni.hideLoading()
+								toastError("断开连接失败！")
+								this.globalData.connected=false
+							}
+						})
+					// #endif
+					// #ifdef APP-PLUS
+					this.globalData.connected=false
+					uni.hideLoading()
+					toastSuccess("断开连接成功！")
+					// #endif
+					
 				}else{
 					uni.hideLoading()
 					this.log("未连接，不能断开")
+					toastError("未连接，不能断开！")
 				}
 			}
 		},
@@ -171,8 +182,8 @@
 				return broker
 			},
 			status(){
-				if(this.connecting) return "连接中"
- 				if(this.connected) return "已连接"
+				if(this.globalData.connecting) return "连接中"
+ 				if(this.globalData.connected) return "已连接"
 				return "未连接"
 			}
 		},

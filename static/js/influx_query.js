@@ -32,8 +32,8 @@ function InfluxQuery(url,token,org,bucket){
 		series:[]
 	}
 	
-	this.getFlux= function(bucket,client_id,start,window){
-		return `toTimestamp = (tables=<-) => tables
+	this.getFlux= function(bucket,client_id,start,window,id){
+		let r = `toTimestamp = (tables=<-) => tables
 |> map(fn: (r) => ({r with _time: uint(v: r._time)}))
 
 divideByX = (x, tables=<-) => tables
@@ -44,30 +44,34 @@ from(bucket: "${bucket}")
 |> filter(fn: (r) => r["_measurement"] == "data")
 |> filter(fn: (r) => r["_field"] == "value")
 |> filter(fn: (r) => r["client_id"] == "${client_id}")
-|> aggregateWindow(every: ${window}, fn: mean, createEmpty: false)
+`
+if(id) r+=`|> filter(fn: (r) => r["id"] == "${id}")
+`
+r+=`|> aggregateWindow(every: ${window}, fn: mean, createEmpty: false)
 |> group(columns: ["id"], mode: "by")
 |> toTimestamp()
 |> divideByX(x: uint(v: 1000000))`
+return r
 		}
+	this.getFluxOne = function(bucket,client_id,start,window,id){
+		return this.getFlux(bucket,client_id,start,window,id)+"\n"+"|> last()"
+	}
 	  
-		this.query=function(client_id,start,window,senser_id){
+		this.query=function(client_id,start,window,senser_id,isLast=false){
 			try{
 				// const queryApi = new InfluxDB({url:this.url, token:this.token}).getQueryApi(this.org)
-				const fluxQuery = this.getFlux(this.bucket, client_id, start, window)
+				const fluxQuery = this.getFlux(this.bucket, client_id, start, window, senser_id)
+				if(isLast)
+					fluxQuery = this.getFluxOne(this.bucket, client_id, start, window, senser_id)
 				this.log+="raw log in query!!!!!!!!!!!!!!!!!!!!!!!!!!"
 				uni.$emit("log","influx_query.query entering")
 				const myQuery = new Promise(async (resolve,reject)=>{
 					console.log("正在查询...")
 					uni.$emit("log","influx_query.query async start")
 					try{
-						// for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
-						// 	const o = tableMeta.toObject(values)
-						// 	this.addData(o,senser_id)
-						// 	uni.$emit("log","get ont"+JSON.stringify(o))
-						// }
-						uni.showLoading({
-							title:"查询中..."
-						})
+						// uni.showLoading({
+						// 	title:"查询中..."
+						// })
 						let res = await uni.request({
 							method:"POST",
 							url:`${this.url}/api/v2/query?org=${this.org}`,
@@ -82,10 +86,10 @@ from(bucket: "${bucket}")
 							},
 							timeout:5000
 						})
-						uni.hideLoading()
-						uni.showToast({
-							title:"查询成功！",
-						})
+						// uni.hideLoading()
+						// uni.showToast({
+						// 	title:"查询成功！",
+						// })
 						let data = []
 						let d = res.data.split("\r\n")
 						for(let i in d){
@@ -107,7 +111,7 @@ from(bucket: "${bucket}")
 					}catch(err){
 						uni.$emit("log","influx_query.query async err:")
 						uni.$emit("log",JSON.stringify(err))
-						uni.hideLoading()
+						// uni.hideLoading()
 						uni.showToast({
 							title:"查询失败！",
 							icon:"error"
@@ -130,12 +134,13 @@ from(bucket: "${bucket}")
 			let time = item._time
 			let id = item.id
 			if(senser_id && id != String(senser_id))return
-			let value = item._value.toFixed(2)
+			let value = Number(item._value.toFixed(2))
 			let date = new Date(time).toTimeString().substring(0,8)
 			if(!categories.find(ele => ele === date))categories.push(date)
 			if(!series.find(ele => ele.name == id))series.push({name:id,data:[]})
 			let data_item = series.find(ele => ele.name==id)
 			data_item.data.push(value)
+			// console.log(data_item)
 		}
 	  return this
 }

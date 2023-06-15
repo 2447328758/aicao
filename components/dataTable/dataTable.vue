@@ -13,8 +13,8 @@
 				</thead>
 				<tbody>
 					<tr v-for="i in data.categories.length" :key="i">
-						<th scope="row">{{data.categories[i-1]}}</th>
-						<td>{{data.series[i-1]}}</td>
+						<th scope="row">{{data.categories[data.categories.length-i]}}</th>
+						<td>{{data.series[0].data[data.categories.length-i]}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -59,7 +59,7 @@
 </script>
 
 <style lang="scss">
-@import url(./bootstrap.min.css);
+@import url('./bootstrap.min.css');
 .title.box{
 	text-align: center;
 	margin: 5rpx;

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="log">
-			<button type="primary" size="mini" @click="log=''">清空</button>
+			<button type="button" class="btn btn-warning btn-sm" @click="log=''">清空</button>
 			<textarea disabled cols="30" rows="10" placeholder="日志" style="width: 100%;" :value="log"></textarea>
 		</view>
 	</view>
