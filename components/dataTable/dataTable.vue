@@ -14,7 +14,7 @@
 				<tbody>
 					<tr v-for="i in data.categories.length" :key="i">
 						<th scope="row">{{data.categories[data.categories.length-i]}}</th>
-						<td>{{data.series[0].data[data.categories.length-i]}}</td>
+						<td>{{data.series.find(ele=>ele.name==id).data[data.categories.length-i]}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -47,6 +47,9 @@
 			},
 			height:{
 				default:"600rpx",
+				type:String
+			},
+			id:{
 				type:String
 			}
 		},

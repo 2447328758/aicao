@@ -1,8 +1,8 @@
 <template>
 	<view class="content">
 		<button class="btn-info btn-sm" @click="getTemp('temperature');getTemp('smoke')">手动刷新</button>
-		<dataTable :data="tempData" title="艾灸温度记录" identifier="温度" unit="℃"></dataTable>
-		<dataTable :data="smokeData" title="艾灸烟雾记录" identifier="烟雾浓度" unit="ppm"></dataTable>
+		<dataTable :data="tempData" :id="'temperature'" title="艾灸温度记录" identifier="温度" unit="℃"></dataTable>
+		<dataTable :data="smokeData" :id="'smoke'" title="艾灸烟雾记录" identifier="烟雾浓度" unit="ppm"></dataTable>
 	</view>
 </template>
 
@@ -26,16 +26,16 @@
 			}
 		},
 		methods: {
-			getTemp(id,data){
+			getTemp(id){
 				// toastLoading("正在查询...")
 				uni.$emit("log","正在查询数据库")
-				let client_id="nodejs_vscode"
+				let client_id="aicao"
 				// let res=undefined
 				// let id = "temperature"
 				this.influx_query.query(client_id,"-10m","30s",id)
 				.then((res)=>{
 					uni.$emit("log","收到influxdb："+JSON.stringify(res))
-					
+					// console.log(res)
 					if(res.categories.length==0){
 						uni.showToast({
 							title:"没有数据！"
