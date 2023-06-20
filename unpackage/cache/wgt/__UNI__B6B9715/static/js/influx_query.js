@@ -64,6 +64,7 @@ return r
 				if(isLast)
 					fluxQuery = this.getFluxOne(this.bucket, client_id, start, window, senser_id)
 				this.log+="raw log in query!!!!!!!!!!!!!!!!!!!!!!!!!!"
+				// console.log(fluxQuery)
 				uni.$emit("log","influx_query.query entering")
 				const myQuery = new Promise(async (resolve,reject)=>{
 					console.log("正在查询...")

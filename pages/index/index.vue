@@ -1,6 +1,7 @@
 <template>
 	<!-- 连接信息 -->
 	<view class="content">
+		<bgImg></bgImg>
 		<view class="up">
 			<view class="form">
 				<view class="form_item">
@@ -66,7 +67,6 @@
 				this.globalData.connecting=true
 				this.disconnect(this.globalData.client)
 				this.globalData.client = mqtt.connect(this.globalData.broker,this.globalData.options)
-				// this.log(this.globalData)
 				this.globalData.client.on("error",(err)=>{
 					uni.hideLoading()
 					this.globalData.connected=false

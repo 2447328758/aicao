@@ -1,6 +1,7 @@
 <!-- 数据曲线 -->
 <template>
 	<view>
+		<bgImg></bgImg>
 		<view class="content">
 			<button class="btn-info" @click="getServerData()">查询</button>
 			<qiun-data-charts
@@ -60,13 +61,15 @@
 				},
 				influxQuery:null,
 				show_chart:false,
-				show_nothing:false
+				show_nothing:true,
+				deviceid:""
 			};
 		},
 		methods:{
 			getServerData() {
 				uni.$emit("log","正在查询数据库")
-				let client_id="aicao"
+				let client_id=this.deviceid;
+				console.log(client_id)
 				let res=undefined
 				this.influx_query.query(client_id,"-10m","30s")
 				.then((res)=>{
@@ -89,10 +92,12 @@
 			}
 		},
 		onLoad() {
+			this.deviceid=getApp().globalData.deviceid
+			console.log(this.deviceid)
 			const opt = opt_influx
 			this.influx_query=new InfluxQuery(opt.url, opt.token, opt.org, opt.bucket)
 		},
-		onShow() {
+		created() {
 			this.getServerData()
 		},
 		mounted: async function () {

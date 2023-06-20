@@ -15,6 +15,8 @@
 		},
 		globalData:{
 			client:null,
+			deviceid:"aicao2",
+			userage:30,
 			// url :"120.26.95.127",
 			url:ip,
 			port : "8083",

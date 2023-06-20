@@ -1,6 +1,7 @@
 <template>
 	<!-- 控制面板 -->
 	<view class="content">
+		<bgImg></bgImg>
 		<!-- 预设温度 -->
 		<infoCard>
 			<template #title>预设温度</template>
@@ -39,15 +40,15 @@
 			</template>
 		</infoCard>
 		<!-- 点火状态 -->
-		<infoCard status :data="statusData.fire">
+		<!-- <infoCard status :data="statusData.fire">
 			<template #title>点火状态</template>
-		</infoCard>
+		</infoCard> -->
 		<!-- 排气扇状态 -->
 		<infoCard status :data="statusData.fan">
-			<template #title>排气扇状态</template>
+			<template #title>控烟装置</template>
 		</infoCard>
 		<infoCard class="advice">
-			<template #title>您的年龄</template>
+			<template #title>用户的年龄</template>
 			<template #content>
 				<view class="cardContent">
 					<view class="digitalNumber">
@@ -138,17 +139,15 @@
 				},
 				statusData:{
 					fire:{
-						value:0,
-						set(val){
-							
-						}
+						value:0
 					},
 					fan:{
-						value:0,
-						set(val){
-							
-						}
+						value:0
 					}
+				},
+				userinfo:{
+					deviceid:"",
+					age:0
 				}
 			};
 		},
@@ -182,6 +181,11 @@
 				else return 44.8
 			}
 		},
+		onLoad(){
+			this.userinfo.deviceid=getApp().globalData.deviceid
+			this.userinfo.age=getApp().globalData.userage
+			this.age.value=this.userinfo.age
+		},
 		watch:{
 			'targetTemp.targetValue':function(val,oldVal){
 				if(val>=this.recData.temperature.max){
@@ -191,6 +195,12 @@
 				}else{
 					send("temperature",val,this.globalData)
 				}
+			},
+			'statusData.fire.value':function(val,oldVal){
+				
+			},
+			'statusData.fan.value':function(val,oldVal){
+				send("fan",val,this.globalData)
 			}
 		}
 	}
