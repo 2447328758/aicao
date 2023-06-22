@@ -28,8 +28,15 @@
 	}
 	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
 	import mqtt from 'mqtt/dist/mqtt.js'
+	import {sign} from "../../static/js/JWTUtils.js"
 	export default {
 		mounted() {
+			let username = "app_aicao_"+(Math.random()*1000000).toFixed(0)
+			let clientid = username
+			let pwd = sign({username:username,clientid,clientid})
+			getApp().globalData.options.clientId=clientid
+			getApp().globalData.options.username=username
+			getApp().globalData.options.password=pwd
 			this.connect()
 		},
 		data() {
