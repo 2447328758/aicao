@@ -36,7 +36,7 @@
 				connectTimeout:30000,
 				username:"test_55",
 				password:"123456",
-				keepalive:60	
+				keepalive:60
 			},
 			connected:false,
 			connecting:false,
