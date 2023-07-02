@@ -40,7 +40,7 @@
 	}
 	.text{
 		display: inline-block;
-		font-family: maobizi;
+		// font-family: maobizi;
 		font-weight: 100;
 	}
 }

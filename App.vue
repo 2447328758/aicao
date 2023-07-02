@@ -63,5 +63,16 @@
   url("/static/font/mM3OHVqI7qmL.woff") format("woff");
   // font-display: swap;
 }
-	
+
+.bg-font{
+	font-size: 60rpx;
+}
+
+.mid-font{
+	font-size: 45rpx;
+}
+
+.sm-font{
+	font-size: 30rpx;
+}
 </style>

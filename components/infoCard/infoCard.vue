@@ -69,9 +69,11 @@
 
 <style lang="scss">
 .content{
-	display: inline;
+	display: inline block;
+	width: 50%;
 }
 .card{
+	flex: 1;
 	.title{
 		font-size: 25px;
 		margin: 6rpx;

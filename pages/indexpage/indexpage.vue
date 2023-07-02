@@ -197,7 +197,7 @@
 	justify-content: center;
 	.title{
 		margin-top: 200rpx;
-		font-family: maobizi;
+		// font-family: maobizi;
 		opacity: 0.85;
 	}
 	.line{

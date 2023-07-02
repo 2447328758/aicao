@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<bgImg></bgImg>
-		<button class="btn-info btn-sm" @click="getTemp('temperature');getTemp('smoke')">手动刷新</button>
+		<button class="btn-info btn-lg" @click="getTemp('temperature');getTemp('smoke')">手动刷新</button>
 		<dataTable :data="tempData" :id="'temperature'" title="艾灸温度记录" identifier="温度" unit="℃"></dataTable>
 		<dataTable :data="smokeData" :id="'smoke'" title="艾灸烟雾记录" identifier="烟雾浓度" unit="ppm"></dataTable>
 	</view>

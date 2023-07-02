@@ -45,8 +45,23 @@
 		</infoCard> -->
 		<!-- 排气扇状态 -->
 		<infoCard status :data="statusData.fan">
-			<template #title>控烟装置</template>
+			<template #title>控温装置</template>
 		</infoCard>
+		<!-- 转速 -->
+		<!-- <infoCard>
+			<template #title>控烟装置</template>
+			<template #content>
+				<view class="cardContent">
+					<view class="digitalNumber">
+						<span class="value">{{targetTemp.targetValue.toFixed(1)}}</span><span class="unit">{{targetTemp.unit}}</span>
+					</view>
+					<view class="btnDown">
+						<button @click="targetTemp.up()" type="button" class="btn btn-primary btn-sm">上升</button>
+						<button @click="targetTemp.down()" type="button" class="btn btn-primary btn-sm">下降</button>
+					</view>
+				</view>
+			</template>
+		</infoCard> -->
 		<infoCard class="advice">
 			<template #title>用户的年龄</template>
 			<template #content>
@@ -55,7 +70,7 @@
 						<view class="">
 							<span class="value">{{age.value}}</span><span class="unit">{{age.unit}}</span>
 						</view>
-						<view class="">
+						<view class="advice-tips">
 							<span class="badge badge-warning title">推荐的最适温度为<span class="value">{{getAdvice(age.value)}}</span><span class="unit">°C</span></span>
 						</view>
 					</view>
@@ -136,6 +151,18 @@
 							this.percent=(value-this.min)/(this.max-this.min)*100
 						}
 					},
+					fan:{
+						value:0,
+						unit:"round/s",
+						min:0,
+						max:Number.MAX_SAFE_INTEGER,
+						percent:0,
+						set(value){
+							if(value>this.max)toastError("警告转速过快！")
+							this.value=value
+							this.percent=(value-this.min)/(this.max-this.min)*100
+						}
+					},
 				},
 				statusData:{
 					fire:{
@@ -193,7 +220,7 @@
 					this.targetTemp.targetValue=this.recData.temperature.max
 					return
 				}else{
-					send("temperature",val,this.globalData)
+					send("temperature",val.toFixed(1),this.globalData)
 				}
 			},
 			'statusData.fire.value':function(val,oldVal){
@@ -229,6 +256,16 @@
 			button{
 				margin: 5rpx;
 			}
+		}
+	}
+	.advice-tips{
+		// border: 1px solid black;
+		overflow: hidden;
+		span{
+			white-space: normal;
+		}
+		span .value,.unit{
+			color: darkgreen;
 		}
 	}
 	

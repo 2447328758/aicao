@@ -3,14 +3,14 @@
 	<view>
 		<bgImg></bgImg>
 		<view class="content">
-			<button class="btn-info" @click="getServerData()">查询</button>
+			<button class="btn-info bg-font" @click="getServerData()">查询</button>
 			<qiun-data-charts
 			v-if="show_chart"
 			type="line"
 			:opts="opts"
 			:chartData="chartData"
 			/>
-			<view v-if="show_nothing" class="tips">
+			<view v-if="show_nothing" class="tips bg-font">
 				<text class="badge badge-warning" style="color: white;">没有数据</text>
 			</view>
 		</view>

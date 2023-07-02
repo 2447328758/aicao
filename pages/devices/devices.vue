@@ -4,20 +4,20 @@
 		<div class="form-group">
 			<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span class="input-group-text">设备id</span>
+			    <span class="input-group-text bg-font">设备id</span>
 			  </div>
-			  <textarea class="form-control" aria-label="With textarea" v-model="addid"></textarea>
+			  <textarea class="form-control bg-font" aria-label="With textarea" v-model="addid"></textarea>
 			</div>
 			
 			<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span class="input-group-text">用户年龄</span>
+			    <span class="input-group-text bg-font">用户年龄</span>
 			  </div>
-			  <textarea class="form-control" aria-label="With textarea" v-model="addage"></textarea>
+			  <textarea class="form-control bg-font" aria-label="With textarea" v-model="addage"></textarea>
 			</div>
 			<!-- <small id="deviceidHelp" class="form-text text-muted">为了更好地提供服务</small> -->
-			<small id="deviceidHelp" class="form-text text-muted">艾灸盒背面标签上写有设备id</small>
-			<button @click="add" class="btn btn-outline-primary addbtn">添加</button>
+			<small id="deviceidHelp" class="form-text text-muted sm-font">艾灸盒背面标签上写有设备id</small>
+			<button @click="add" class="btn btn-outline-primary addbtn bg-font">添加</button>
 		</div>
 		<table class="table table-striped table-bordered devices">
 			<thead>
@@ -29,9 +29,9 @@
 			</thead>
 			<tbody>
 				<tr v-for="u,i in users" :class="{choosed:u.did==did}" :key="u.did">
-					<td>{{u.did}}</td>
-					<td>{{u.age}}</td>
-					<td>
+					<td class="mid-font">{{u.did}}</td>
+					<td class="mid-font">{{u.age}}</td>
+					<td class="mid-font">
 						<button @click="choose(i)" class="btn btn_oper btn-outline-primary btn-sm" style="width: 46px;">设置</button>
 						<button @click="del(i)" class="btn btn_oper btn-outline-danger btn-sm" style="width: 46px;">删除</button>
 					</td>
@@ -74,6 +74,12 @@
 						icon:"error"
 					})
 					return;
+				}else if(this.users.filter((e,index)=>e.did==this.addid).length!=0){
+					uni.showToast({
+						title:"不允许重复添加！",
+						icon:"error"
+					})
+					return;
 				}
 					
 				this.users.push({"did":this.addid,"age":Number(this.addage)})
@@ -113,7 +119,7 @@
 .out{
 	padding: 6px;
 	.addbtn{
-		margin-left: 80%;
+		margin-left: 70%;
 	}
 	.devices{
 		text-align: center;
