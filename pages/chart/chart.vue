@@ -14,7 +14,6 @@
 				<text class="badge badge-warning" style="color: white;">没有数据</text>
 			</view>
 		</view>
-		
 	</view>
 </template>
 

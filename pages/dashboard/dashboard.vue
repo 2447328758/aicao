@@ -71,13 +71,13 @@
 							<span class="value">{{age.value}}</span><span class="unit">{{age.unit}}</span>
 						</view>
 						<view class="advice-tips">
-							<span class="badge badge-warning title">推荐的最适温度为<span class="value">{{getAdvice(age.value)}}</span><span class="unit">°C</span></span>
+							<span class="badge badge-warning title">推荐的最适温度为<span class="value">{{getAdvice(age.value)[0]}}~{{getAdvice(age.value)[1]}}</span><span class="unit">°C</span></span>
 						</view>
 					</view>
 					<view class="btnDown">
 						<button @click="age.up()" type="button" class="btn btn-primary btn-sm">上升</button>
 						<button @click="age.down()" type="button" class="btn btn-primary btn-sm">下降</button>
-						<button @click="targetTemp.targetValue=getAdvice(age.value)" type="button" class="btn btn-danger btn-sm">设置</button>
+						<button @click="sendTempRange(getAdvice(age.value))" type="button" class="btn btn-danger btn-sm">设置</button>
 					</view>
 				</view>
 			</template>
@@ -94,6 +94,8 @@
 			toastError("请先连接！")
 			return
 		}else{
+			if(typeof val == 'object')
+				val = JSON.stringify(val)
 			globalData.client.publish(
 				topic_pub,
 				`{"id":"${id}","value":${val}}`,
@@ -198,14 +200,22 @@
 				})
 			},
 			getAdvice(age){
-				if(age<12) return 38.0
-				else if(age<16)return 40.0
-				else if(age<26)return 45.0
-				else if(age<30)return 48.0
-				else if(age<40)return 52.0
-				else if(age<45)return 48.0
-				else if(age<55)return 45.0
-				else return 44.8
+				// if(age<12) return 38.0
+				// else if(age<16)return 40.0
+				// else if(age<26)return 45.0
+				// else if(age<30)return 48.0
+				// else if(age<40)return 52.0
+				// else if(age<45)return 48.0
+				// else if(age<55)return 45.0
+				// else return 44.8
+				if(age>=20 && age <= 30)return[50,53]
+				if(age>=30 && age <= 40)return[52,55]
+				if(age>=40 && age <= 50)return[54,57]
+				if(age>=50 && age <= 60)return[55,58]
+				return [NaN,NaN]
+			},
+			sendTempRange(range){
+				send("temperatureRange",{min:range[0],max:range[1]},this.globalData)
 			}
 		},
 		onLoad(){
