@@ -82,11 +82,13 @@
 				</view>
 			</template>
 		</infoCard>
+		<button @click="alertTemp()"> alert</button>
 	</view>
 </template>
 
 <script>
-	var topic_pub='set/aicao'
+	var innerAudioContext = null
+	var topic_pub='set/aicao/'
 	var sendTag=true
 	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
 	function send(id,val,globalData){
@@ -97,7 +99,7 @@
 			if(typeof val == 'object')
 				val = JSON.stringify(val)
 			globalData.client.publish(
-				topic_pub,
+				topic_pub+getApp().globalData.deviceid,
 				`{"id":"${id}","value":${val}}`,
 				(err)=>{
 					if(!err)toastSuccess("设置成功!")
@@ -105,6 +107,28 @@
 				}
 			)
 		}
+	}
+	
+	function alertTemp(){
+			if(innerAudioContext!=null)return
+			console.log("play")
+			innerAudioContext = uni.createInnerAudioContext();
+			innerAudioContext.autoplay = true;
+			innerAudioContext.src = '../../static/mp3/alertTemp2.mp3';
+			innerAudioContext.onPlay(() => {
+			  console.log('开始播放');
+			});
+			innerAudioContext.onError((res) => {
+			  console.log(res.errMsg);
+			  console.log(res.errCode);
+			});
+			innerAudioContext.loop=true
+			innerAudioContext.play()
+	}
+	
+	function stop(){
+		innerAudioContext.stop()
+		innerAudioContext=null
 	}
 	export default {
 		beforeMount() {
@@ -135,7 +159,10 @@
 						max:53,
 						percent:0,
 						set(value){
-							if(value>this.max)toastError("警告温度过高！")
+							if(value>this.max){
+								toastError("警告温度过高！")
+								alertTemp()
+							}
 							this.value=value
 							this.percent=(value-this.min)/(this.max-this.min)*100<0?0:(value-this.min)/(this.max-this.min)*100
 							// console.log("percent"+this.percent)
@@ -216,7 +243,7 @@
 			},
 			sendTempRange(range){
 				send("temperatureRange",{min:range[0],max:range[1]},this.globalData)
-			}
+			},
 		},
 		onLoad(){
 			this.userinfo.deviceid=getApp().globalData.deviceid
@@ -226,6 +253,7 @@
 		watch:{
 			'targetTemp.targetValue':function(val,oldVal){
 				if(val>=this.recData.temperature.max){
+					this.alertTemp()
 					toastError("警告温度过高！")
 					this.targetTemp.targetValue=this.recData.temperature.max
 					return
