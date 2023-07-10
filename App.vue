@@ -47,6 +47,10 @@
 				_measurement:"data",
 				_field:"value",
 				token:"ft0aJ0ZdfU89CDKnUVFRDWGraR1WQo6k2dBpQNF2It_0inwgZSi7-9gHTB9P7EAslcief9YQIpRqbaD38mCOdw=="
+			},
+			mqttRetainedValue:{
+				temperature:0,
+				temperatureAdvice:0
 			}
 		}
 	}
@@ -55,7 +59,7 @@
 <style lang="scss">
 
 @import url('./static/bootstrap-4.6.2-dist/css/bootstrap.css');
-
+@font-face{font-family:electronicFont;src:url(./static/font/DS-DIGII-3.ttf)}
 /* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: "VFRegular";
@@ -74,5 +78,9 @@
 
 .sm-font{
 	font-size: 30rpx;
+}
+
+.keji{
+	font-family: electronicFont;
 }
 </style>

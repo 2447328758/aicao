@@ -14,12 +14,15 @@
 			</slot>
 			<slot name="status">
 				<view class="cardContent" v-if="status">
+					<view class="" style="margin: auto; text-align: center; font-size: 14px;">
+						<span class="badge badge-dark">状态</span>
+					</view>
 					<view class="status digitalNumber">
-						<span class="value">{{getStatus(data)?"OPEN":"CLOSE"}}</span>
+						<span class="value" :class="{statusText:true, active:active, inactive:!active}" style="font-size: 20px; margin: auto;">{{getStatus(data)?"运行中":"未运行"}}</span>
 					</view>
 					<view class="btnDown">
-						<button @click="openStatus(data)" type="button" class="btn btn-warning btn-sm">打开</button>
-						<button @click="closeStatus(data)" type="button" class="btn btn-warning btn-sm">关闭</button>
+						<button v-if="!getStatus(data)" @click="openStatus(data)" type="button" class="btn btn-warning btn-sm">打开</button>
+						<button v-if="getStatus(data)" @click="closeStatus(data)" type="button" class="btn btn-warning btn-sm">关闭</button>
 					</view>
 				</view>
 			</slot>
@@ -50,7 +53,7 @@
 		},
 		data() {
 			return {
-				
+				active:false
 			};
 		},
 		methods:{
@@ -59,9 +62,11 @@
 			},
 			closeStatus(status){
 				status.value=0
+				this.active=false
 			},
 			openStatus(status){
 				status.value=1
+				this.active=true
 			}
 		}
 	}
@@ -85,16 +90,40 @@
 		border: 2px solid gray;
 	.digitalNumber{
 		font-family: electronicFont;
-		.value{
-			font-size: 45px;
-		}
-		.unit{
-			font-size: 20px;
-		}
+		// .value{
+		// 	font-size: 43px;
+		// }
+		// .unit{
+		// 	font-size: 20px;
+		// }
 		span{
 			margin: 10rpx;
 		}
 	}
 }
+
+.status{
+	display: flex;
+	.statusText{
+		padding: 5px;
+		transition: ease-in-out;
+		border-radius: 5px;
+		transition-duration: 5000;
+		font-size: 14px;
+		// background-color: red;
+	}
+	.inactive{
+		border-radius: 5px;
+		background-color: red;
+		color: darkblue;
+	}
+	.active{
+		border-radius: 5px;
+		background-color: green;
+		color: white;
+	}
+}
+
+
 	
 </style>

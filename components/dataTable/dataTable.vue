@@ -39,9 +39,11 @@
 				type:String
 			},
 			data:{
-				default:{
-					categories: new Array(100).fill(new Date(Date.now()).toTimeString().substring(0,8)),
-					series: new Array(100).fill(12.6)
+				default:()=>{
+					return{
+						categories: new Array(100).fill(new Date(Date.now()).toTimeString().substring(0,8)),
+						series: new Array(100).fill(12.6)
+					}
 				},
 				type:[Object]
 			},

@@ -82,7 +82,7 @@
 				</view>
 			</template>
 		</infoCard>
-		<button @click="alertTemp()"> alert</button>
+		<!-- <button @click="alertTemp()"> alert</button> -->
 	</view>
 </template>
 
@@ -223,6 +223,7 @@
 						this.recData[msgjson.id].set(msgjson.value)
 					if(this.statusData[msgjson.id]&&(msgjson.value===1||msgjson.value===0))
 						this.statusData[msgjson.id].set(msgjson.value)
+					if(msgjson.id=="temperature")getApp().globalData.mqttRetainedValue.temperature=msgjson.value
 					this.log("updateModelEvent done!:"+JSON.stringify(msgjson))
 				})
 			},

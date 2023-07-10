@@ -7,13 +7,13 @@
 			</view>
 			<view class="line"></view>
 			<scroll-view scroll-y class="btns">
-				<menuItem :icon="'../../static/icon/info.png'" @click.native="clicked('devices')">设备信息</menuItem>
+				<menuItem class="deviceinfoItem" :icon="'../../static/icon/info.png'" @click.native="clicked('devices')">设备信息</menuItem>
+				<menuItem :icon="'../../static/icon/temp.png'" @click.native="clicked('datadetial','temperature')">温度数据曲线</menuItem>
+				<menuItem :icon="'../../static/icon/smoke.png'" @click.native="clicked('datadetial','smoke')">烟雾浓度曲线</menuItem>
 				<menuItem :icon="'../../static/icon/temp.png'" @click.native="clicked('dashboard')">控温装置</menuItem>
 				<menuItem :icon="'../../static/icon/smoke.png'" @click.native="clicked('dashboard')">控烟装置</menuItem>
-				<menuItem :icon="'../../static/icon/temp.png'" @click.native="clicked('dashboard')">温度实时信息</menuItem>
-				<menuItem :icon="'../../static/icon/smoke.png'" @click.native="clicked('dashboard')">烟雾实时信息</menuItem>
-				<menuItem :icon="'../../static/icon/table.png'" @click.native="clicked('datadetial')">数据表格</menuItem>
-				<menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('chart')">数据曲线</menuItem>
+				<!-- <menuItem :icon="'../../static/icon/table.png'" @click.native="clicked('datadetial')">数据表格</menuItem> -->
+				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('chart')">数据曲线</menuItem> -->
 				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('index')">debug</menuItem> -->
 			</scroll-view>
 		</view>
@@ -46,8 +46,8 @@
 			};
 		},
 		methods:{
-			clicked(choice){
-				navagateTo("/pages/"+choice+"/"+choice)	
+			clicked(choice,id){
+				navagateTo("/pages/"+choice+"/"+choice+"?id="+id)	
 			},
 			log(d){
 				if(typeof d == "object")
@@ -214,6 +214,9 @@
 		border: 2px solid rgba(0,0,0,0.6);
 		border-radius: 30rpx;
 		background-color: rgba(200, 200, 200, 0.3);
+	}
+	.deviceinfoItem{
+		width: 95%;
 	}
 }
 </style>
