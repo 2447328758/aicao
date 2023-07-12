@@ -1,6 +1,28 @@
 <script>
 	// let ip ="120.26.95.127"
 	let ip ="120.26.95.127"
+	import {toastSuccess, toastError, toastLoading} from "./unijs/unitoast"
+	var innerAudioContext = null
+	function alertTemp(){
+			if(innerAudioContext!=null)return
+			console.log("play")
+			innerAudioContext = uni.createInnerAudioContext();
+			innerAudioContext.autoplay = true;
+			innerAudioContext.src = './static/mp3/alertTemp2.mp3';
+			innerAudioContext.onPlay(() => {
+			  console.log('开始播放');
+			});
+			innerAudioContext.onError((res) => {
+			  console.log(res.errMsg);
+			  console.log(res.errCode);
+			});
+			innerAudioContext.loop=true
+			innerAudioContext.play()
+	}
+	function stop(){
+		innerAudioContext.stop()
+		innerAudioContext=null
+	}
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
@@ -16,7 +38,7 @@
 		},
 		globalData:{
 			client:null,
-			deviceid:"aicao2",
+			deviceid:"123",
 			userage:30,
 			// url :"120.26.95.127",
 			url:ip,
@@ -52,6 +74,56 @@
 			mqttRetainedValue:{
 				temperature:0,
 				temperatureAdvice:0
+			},
+			recData:{
+				temperature:{
+					value:0,
+					unit:"°C",
+					min:36,
+					max:53,
+					percent:0,
+					set(value){
+						if(value>this.max){
+							toastError("警告温度过高！")
+							alertTemp()
+						}
+						this.value=value
+						this.percent=(value-this.min)/(this.max-this.min)*100<0?0:(value-this.min)/(this.max-this.min)*100
+						// console.log("percent"+this.percent)
+					}
+				},
+				smoke:{
+					value:0,
+					unit:"ppm",
+					min:0,
+					max:100,
+					percent:0,
+					set(value){
+						if(value>this.max)toastError("警告温度过高！")
+						this.value=value
+						this.percent=(value-this.min)/(this.max-this.min)*100
+					}
+				},
+				fan:{
+					value:0,
+					unit:"round/s",
+					min:0,
+					max:Number.MAX_SAFE_INTEGER,
+					percent:0,
+					set(value){
+						if(value>this.max)toastError("警告转速过快！")
+						this.value=value
+						this.percent=(value-this.min)/(this.max-this.min)*100
+					}
+				},
+			},
+			statusData:{
+				fire:{
+					value:0
+				},
+				fan:{
+					value:0
+				}
 			}
 		}
 	}

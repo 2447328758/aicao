@@ -61,6 +61,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/ctlFan/ctlFan",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

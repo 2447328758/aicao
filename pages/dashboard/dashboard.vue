@@ -43,10 +43,8 @@
 		<!-- <infoCard status :data="statusData.fire">
 			<template #title>点火状态</template>
 		</infoCard> -->
-		<!-- 排气扇状态 -->
-		<infoCard status :data="statusData.fan">
-			<template #title>控温装置</template>
-		</infoCard>
+		
+		
 		<!-- 转速 -->
 		<!-- <infoCard>
 			<template #title>控烟装置</template>
@@ -87,7 +85,6 @@
 </template>
 
 <script>
-	var innerAudioContext = null
 	var topic_pub='set/aicao/'
 	var sendTag=true
 	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
@@ -107,28 +104,6 @@
 				}
 			)
 		}
-	}
-	
-	function alertTemp(){
-			if(innerAudioContext!=null)return
-			console.log("play")
-			innerAudioContext = uni.createInnerAudioContext();
-			innerAudioContext.autoplay = true;
-			innerAudioContext.src = '../../static/mp3/alertTemp2.mp3';
-			innerAudioContext.onPlay(() => {
-			  console.log('开始播放');
-			});
-			innerAudioContext.onError((res) => {
-			  console.log(res.errMsg);
-			  console.log(res.errCode);
-			});
-			innerAudioContext.loop=true
-			innerAudioContext.play()
-	}
-	
-	function stop(){
-		innerAudioContext.stop()
-		innerAudioContext=null
 	}
 	export default {
 		beforeMount() {
@@ -151,60 +126,12 @@
 					up(){this.value+=1},
 					down(){this.value-=1}
 				},
-				recData:{
-					temperature:{
-						value:0,
-						unit:"°C",
-						min:36,
-						max:53,
-						percent:0,
-						set(value){
-							if(value>this.max){
-								toastError("警告温度过高！")
-								alertTemp()
-							}
-							this.value=value
-							this.percent=(value-this.min)/(this.max-this.min)*100<0?0:(value-this.min)/(this.max-this.min)*100
-							// console.log("percent"+this.percent)
-						}
-					},
-					smoke:{
-						value:0,
-						unit:"ppm",
-						min:0,
-						max:100,
-						percent:0,
-						set(value){
-							if(value>this.max)toastError("警告温度过高！")
-							this.value=value
-							this.percent=(value-this.min)/(this.max-this.min)*100
-						}
-					},
-					fan:{
-						value:0,
-						unit:"round/s",
-						min:0,
-						max:Number.MAX_SAFE_INTEGER,
-						percent:0,
-						set(value){
-							if(value>this.max)toastError("警告转速过快！")
-							this.value=value
-							this.percent=(value-this.min)/(this.max-this.min)*100
-						}
-					},
-				},
-				statusData:{
-					fire:{
-						value:0
-					},
-					fan:{
-						value:0
-					}
-				},
 				userinfo:{
 					deviceid:"",
 					age:0
-				}
+				},
+				recData:getApp().globalData.recData,
+				statusData:getApp().globalData.statusData
 			};
 		},
 		methods:{
@@ -261,12 +188,6 @@
 				}else{
 					send("temperature",val.toFixed(1),this.globalData)
 				}
-			},
-			'statusData.fire.value':function(val,oldVal){
-				
-			},
-			'statusData.fan.value':function(val,oldVal){
-				send("fan",val,this.globalData)
 			}
 		}
 	}

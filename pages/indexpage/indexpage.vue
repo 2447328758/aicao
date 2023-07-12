@@ -8,10 +8,11 @@
 			<view class="line"></view>
 			<scroll-view scroll-y class="btns">
 				<menuItem class="deviceinfoItem" :icon="'../../static/icon/info.png'" @click.native="clicked('devices')">设备信息</menuItem>
+				<menuItem class="deviceinfoItem" :icon="'../../static/icon/dashboard.png'" @click.native="clicked('dashboard')">控制面板</menuItem>
 				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('datadetial','temperature')">灸疗温度</menuItem>
 				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('datadetial','smoke')">烟雾浓度</menuItem>
-				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('dashboard')">控温装置</menuItem>
-				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('dashboard')">控烟装置</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('ctlFan','temp')">控温装置</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('ctlFan','smoke')">控烟装置</menuItem>
 				<!-- <menuItem :icon="'../../static/icon/table.png'" @click.native="clicked('datadetial')">数据表格</menuItem> -->
 				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('chart')">数据曲线</menuItem> -->
 				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('index')">debug</menuItem> -->
@@ -27,6 +28,7 @@
 			url:url
 		})
 	}
+	
 	import {toastSuccess, toastError, toastLoading} from "../../unijs/unitoast"
 	import mqtt from 'mqtt/dist/mqtt.js'
 	import {sign} from "../../static/js/JWTUtils.js"
@@ -113,6 +115,7 @@
 					return
 				else{
 					this.log("收到模型信息..."+JSON.stringify(msgjson))
+					console.log(JSON.stringify(msgjson))
 					uni.$emit("updateModel",msgjson)
 				}
 			},
@@ -217,11 +220,11 @@
 		background-color: rgba(200, 200, 200, 0.3);
 	}
 	.deviceinfoItem{
-		height: 30%;
+		height: 20%;
 		width: 95%;
 	}
 	.item{
-		height: 30%;
+		height: 20%;
 	}
 }
 </style>
