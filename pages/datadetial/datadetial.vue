@@ -169,6 +169,12 @@
 		onLoad(e){
 			// console.log(e)
 			this.currentId=e.id
+			if(e.id=="temperature")uni.setNavigationBarTitle({
+				title:"灸疗温度"
+			})
+			if(e.id=="smoke")uni.setNavigationBarTitle({
+				title:"烟雾浓度"
+			})
 			const opt = opt_influx
 			this.influx_query=new InfluxQuery(opt.url, opt.token, opt.org, opt.bucket)
 			this.userage=getApp().globalData.userage
