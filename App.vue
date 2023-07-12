@@ -1,4 +1,5 @@
 <script>
+	// let ip ="120.26.95.127"
 	let ip ="120.26.95.127"
 	export default {
 		onLaunch: function() {

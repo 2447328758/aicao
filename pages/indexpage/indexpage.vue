@@ -3,15 +3,15 @@
 		<view class="content">
 			<bgImg></bgImg>
 			<view class="title">
-				<h1>智能艾灸监测系统</h1>
+				<h1>南阳艾智慧灸疗系统</h1>
 			</view>
 			<view class="line"></view>
 			<scroll-view scroll-y class="btns">
 				<menuItem class="deviceinfoItem" :icon="'../../static/icon/info.png'" @click.native="clicked('devices')">设备信息</menuItem>
-				<menuItem :icon="'../../static/icon/temp.png'" @click.native="clicked('datadetial','temperature')">温度数据曲线</menuItem>
-				<menuItem :icon="'../../static/icon/smoke.png'" @click.native="clicked('datadetial','smoke')">烟雾浓度曲线</menuItem>
-				<menuItem :icon="'../../static/icon/temp.png'" @click.native="clicked('dashboard')">控温装置</menuItem>
-				<menuItem :icon="'../../static/icon/smoke.png'" @click.native="clicked('dashboard')">控烟装置</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('datadetial','temperature')">灸疗温度</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('datadetial','smoke')">烟雾浓度</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('dashboard')">控温装置</menuItem>
+				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('dashboard')">控烟装置</menuItem>
 				<!-- <menuItem :icon="'../../static/icon/table.png'" @click.native="clicked('datadetial')">数据表格</menuItem> -->
 				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('chart')">数据曲线</menuItem> -->
 				<!-- <menuItem :icon="'../../static/icon/chart.png'" @click.native="clicked('index')">debug</menuItem> -->
@@ -22,6 +22,7 @@
 
 <script>
 	function navagateTo(url){
+		console.log(url)
 		uni.navigateTo({
 			url:url
 		})
@@ -216,7 +217,11 @@
 		background-color: rgba(200, 200, 200, 0.3);
 	}
 	.deviceinfoItem{
+		height: 30%;
 		width: 95%;
+	}
+	.item{
+		height: 30%;
 	}
 }
 </style>
