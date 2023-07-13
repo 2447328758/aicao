@@ -4,14 +4,14 @@
 		<div class="form-group">
 			<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span class="input-group-text bg-font">设备id</span>
+			    <span class="input-group-text bg-font" >{{"&nbsp;设&nbsp;备&nbsp;i&nbsp;d&nbsp;"}}</span>
 			  </div>
 			  <textarea class="form-control bg-font" aria-label="With textarea" v-model="addid"></textarea>
 			</div>
 			
 			<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span class="input-group-text bg-font">用户年龄</span>
+			    <span class="input-group-text bg-font">{{"&nbsp;"}}用户年龄</span>
 			  </div>
 			  <textarea class="form-control bg-font" aria-label="With textarea" v-model="addage"></textarea>
 			</div>

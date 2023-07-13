@@ -3,18 +3,21 @@
 		<view class="title box">
 			<span class="badge-pill badge-info mid-font" >{{title}}</span>
 		</view>
-		<scroll-view class="scroll table" scroll-y :style="{height:height}">
+		<scroll-view class="scroll table" scroll-y scroll-x="" :style="{height:height}">
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
-						<th class="mid-font" scope="col" width="50%">{{identifier}}</th>
-						<th class="mid-font" scope="col" width="50%">值（{{unit}}）</th>	
+						<!-- <th class="mid-font" scope="col" width="50%">{{identifier}}</th> -->
+						<!-- <th class="mid-font" scope="col" width="50%">值（{{unit}}）</th>	 -->
+						<th class="mid-font" scope="col" >{{identifier}}</th>
+						<th class="mid-font" v-for="th in data.series">{{th.name}}（{{unit}}）</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="i in data.categories.length" :key="i">
 						<th scope="row" class="mid-font">{{data.categories[data.categories.length-i]}}</th>
-						<td class="mid-font">{{data.series.find(ele=>ele.name==id).data[data.categories.length-i]}}</td>
+						<!-- <td class="mid-font">{{data.series.find(ele=>ele.name==id).data[data.categories.length-i]}}</td> -->
+						<td v-for="line in data.series" class="mid-font">{{line.data[data.categories.length-i]}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -41,8 +44,8 @@
 			data:{
 				default:()=>{
 					return{
-						categories: new Array(100).fill(new Date(Date.now()).toTimeString().substring(0,8)),
-						series: new Array(100).fill(12.6)
+						categories: ['a','b','c'],
+						series: [{name:"data_1",data:[1,2,3]}]
 					}
 				},
 				type:[Object]

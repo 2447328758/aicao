@@ -16,7 +16,7 @@
 			</view>
 			
 		</view>
-		<button class="btn-info btn-lg" @click="tableConfig[currentId].data = getTemp(currentId)">手动刷新</button>
+		<button class="btn-info btn-lg" @click="tableConfig[currentId].data = getTemp(tableConfig[currentId].ids)">手动刷新</button>
 		<!-- <dataTable :data="tempData" :id="'temperature'" title="艾灸温度记录" identifier="温度" unit="℃"></dataTable>
 		<dataTable :data="smokeData" :id="'smoke'" title="艾灸烟雾记录" identifier="烟雾浓度" unit="ppm"></dataTable> -->
 		<dataPage 
@@ -73,7 +73,8 @@
 						id:"temperature",
 						title:"艾灸温度记录",
 						identifier:"时间" ,
-						unit:"℃" 
+						unit:"℃",
+						ids:["temperature","temperature_1","temperature_2"]
 					},
 					"smoke":{
 						data:{
@@ -83,7 +84,8 @@
 						id:"smoke",
 						title:"烟雾浓度记录",
 						identifier:"时间" ,
-						unit:"ppm" 
+						unit:"ppm" ,
+						ids:["smoke","smoke_1","smoke_2"]
 					}
 				},
 				userage:0
@@ -110,6 +112,7 @@
 						// else if (id == 'smoke')
 						// 	this.smokeData=res
 						this.tableConfig[this.currentId].data = res
+						console.log(res)
 					}
 				},
 				(err)=>
@@ -126,7 +129,7 @@
 				let res=undefined
 				toastLoading("正在查询！")
 				// this.influx_query.query(client_id,"-10m","30s")
-				this.influx_query.query(client_id,"-10m","30s",this.currentId)
+				this.influx_query.query(client_id,"-30m","40s",this.tableConfig[this.currentId].ids)
 				.then((res)=>{
 					uni.$emit("log","收到influxdb："+JSON.stringify(res))
 					// res.series = res.series.find(ele=>ele.name==this.currentId)
