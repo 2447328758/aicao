@@ -8,7 +8,7 @@
 			<view class="line"></view>
 			<scroll-view scroll-y class="btns">
 				<menuItem class="deviceinfoItem" :icon="'../../static/icon/info.png'" @click.native="clicked('devices')">设备信息</menuItem>
-				<menuItem class="deviceinfoItem" :icon="'../../static/icon/dashboard.png'" @click.native="clicked('dashboard')">控制面板</menuItem>
+				<!-- <menuItem class="deviceinfoItem" :icon="'../../static/icon/dashboard.png'" @click.native="clicked('dashboard')">控制面板</menuItem> -->
 				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('datadetial','temperature')">灸疗温度</menuItem>
 				<menuItem class="item" :icon="'../../static/icon/smoke.png'" @click.native="clicked('datadetial','smoke')">烟雾浓度</menuItem>
 				<menuItem class="item" :icon="'../../static/icon/temp.png'" @click.native="clicked('ctlFan','temp')">控温装置</menuItem>
@@ -220,11 +220,11 @@
 		background-color: rgba(200, 200, 200, 0.3);
 	}
 	.deviceinfoItem{
-		height: 20%;
+		height: 30%;
 		width: 95%;
 	}
 	.item{
-		height: 20%;
+		height: 30%;
 	}
 }
 </style>

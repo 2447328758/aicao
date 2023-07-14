@@ -48,12 +48,29 @@
 			key:deviceKey
 		})
 	}
-	
+	var topic_pub='set/aicao/'
 	function saveDevices(users){
 		uni.setStorage({
 			key:deviceKey,
 			data:users
 		})
+	}
+	function send(id,val,globalData){
+		if(!globalData.connected){
+			toastError("请先连接！")
+			return
+		}else{
+			if(typeof val == 'object')
+				val = JSON.stringify(val)
+			globalData.client.publish(
+				topic_pub+getApp().globalData.deviceid,
+				`{"id":"${id}","value":${val}}`,
+				(err)=>{
+					if(!err)toastSuccess("设置成功!")
+					else toastError("设置失败！"+err)
+				}
+			)
+		}
 	}
 	export default {
 		data() {
@@ -91,6 +108,7 @@
 				getApp().globalData.deviceid=this.users[index].did
 				getApp().globalData.userage=this.users[index].age
 				getApp().globalData.client.subscribe("post/aicao/"+this.users[index].did)
+				send("age",this.users[index].age,getApp().globalData)
 				uni.showToast({
 					title:"设置成功！"
 				})			
