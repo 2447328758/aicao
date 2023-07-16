@@ -74,7 +74,7 @@
 						title:"艾灸温度记录",
 						identifier:"时间" ,
 						unit:"℃",
-						ids:["temperature","temperature_1","temperature_2"]
+						ids:["temperature"]
 					},
 					"smoke":{
 						data:{
@@ -85,7 +85,7 @@
 						title:"烟雾浓度记录",
 						identifier:"时间" ,
 						unit:"ppm" ,
-						ids:["smoke","smoke_1","smoke_2"]
+						ids:["smoke"]
 					}
 				},
 				userage:0
